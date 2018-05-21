@@ -1,9 +1,26 @@
-#todo
-##アルゴリズムのランキング表示
-##csvのy_proba = y_proba.rename(columns={'1': 'aa'})が効かない
-##モデル用データマートに施したのと同一データ前処理をスコア用データマートに対しても適用(RFEは？特徴カラム種類ずれない方法など調べる)
+# 以下のデータ形式を前提としたプログラムです。
+# ---------データ形式---------
+# ・ファイル名
+# 　・モデル用：final_hr_analysis_train.csv
+# 　・スコア用：final_hr_analysis_test.csv
+# ・データ形式
+# 　・第1列：index（ID列）
+# 　・第2列：left（1：退職、0：非退職の正解ラベル）
+# 　・第3列以降：特徴量
+# 　・カテゴリ変数名：sales, salary
+# 　・ヘッダー項目（以下11項目、以下順番で構成）
+# 　　・index
+# 　　・left
+# 　　・satisfaction_level
+# 　　・last_evaluation
+# 　　・number_project
+# 　　・average_montly_hours
+# 　　・time_spend_company
+# 　　・Work_accident
+# 　　・promotion_last_5years
+# 　　・sales
+# 　　・salary
 
-# bases
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -22,11 +39,13 @@ from sklearn.linear_model import LogisticRegression
 # evaluation indexes
 from sklearn.metrics import f1_score, accuracy_score
 
-#データ読み込み
+#モードの選択(学習:train、評価:test)
 mode = input('train or test >>>')
-data = pd.read_csv('./data/final_hr_analysis_' + str(mode) + '.csv', header=0)
+#CSVファイル形式のデータの読み込み
+filename = input('csv file name >>>')
+data = pd.read_csv('./data/str(filename), header=0)
 
-##カテゴリデータの列名取得
+##カテゴリデータの列名の取得
 COLS_OHE = []
 while(True):
     input_cate = input('Input the name of categorical columns >>> ')
@@ -38,7 +57,8 @@ while(True):
         print('invalid input')
         continue
         
-#データ取得（固定）
+#ID、クラス変数、特徴量にデータを分割
+##
 if mode != 'test':
     ID = data.iloc[:, [0]]
     CLASS = data.iloc[:, [1]]
